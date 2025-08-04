@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Comparison App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.11.4/dist/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results {
+            margin-top: 2rem;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .user-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .user-card .rank {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-right: 1rem;
+        }
+        
+        .user-card .info {
+            flex-grow: 1;
+        }
+        
+        .user-card .name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-card .age {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success);
+            width: 0;
+            transition: width 1s ease;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            opacity: 0;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            color: var(--danger);
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        
+        .celebrate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">Age Comparison App</h1>
+        
+        <div id="step1" class="form-step active">
+            <div class="form-group">
+                <label for="username">Enter Your Name</label>
+                <input type="text" id="username" placeholder="Your name..." autocomplete="off">
+            </div>
+            <button id="next1" disabled>Continue</button>
+        </div>
+        
+        <div id="step2" class="form-step">
+            <div class="form-group">
+                <label for="dob">Enter Your Date of Birth</label>
+                <input type="date" id="dob" max="">
+            </div>
+            <button id="next2" disabled>Submit</button>
+        </div>
+        
+        <div id="step3" class="form-step">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Calculating results...</p>
+            </div>
+            
+            <div class="results" id="results">
+                <h2>Top 10 Oldest Users</h2>
+                <div id="user-list"></div>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="total-users">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="average-age">0</div>
+                        <div class="stat-label">Avg. Age</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="your-rank">-</div>
+                        <div class="stat-label">Your Rank</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <p style="text-align: center;">You are older than <span id="percent-older">0</span>% of users</p>
+            </div>
+            
+            <button id="restart">Start Over</button>
+        </div>
+        
+        <div class="error" id="error"></div>
+    </div>
+    
+    <div class="celebrate" id="celebrate"></div>
+    
+    <script>
+        // Google Sheets setup
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwpPm6NeLVps3y_XDLs29e8ZEtM5_c69jjSqHqSIojovjQYAu9-nOpagvU--V3axZicvg/exec'; // You'll replace this
+        
+        // DOM elements
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const usernameInput = document.getElementById('username');
+        const dobInput = document.getElementById('dob');
+        const next1Btn = document.getElementById('next1');
+        const next2Btn = document.getElementById('next2');
+        const restartBtn = document.getElementById('restart');
+        const userList = document.getElementById('user-list');
+        const totalUsersEl = document.getElementById('total-users');
+        const averageAgeEl = document.getElementById('average-age');
+        const yourRankEl = document.getElementById('your-rank');
+        const percentOlderEl = document.getElementById('percent-older');
+        const progressBar = document.getElementById('progress-bar');
+        const loadingEl = document.querySelector('.loading');
+        const resultsEl = document.getElementById('results');
+        const errorEl = document.getElementById('error');
+        const celebrateEl = document.getElementById('celebrate');
+        
+        // Set max date to today for date picker
+        dobInput.max = new Date().toISOString().split('T')[0];
+        
+        // Animation timeline
+        const tl = gsap.timeline();
+        
+        // Event listeners
+        usernameInput.addEventListener('input', () => {
+            next1Btn.disabled = usernameInput.value.trim() === '';
+        });
+        
+        dobInput.addEventListener('change', () => {
+            next2Btn.disabled = !dobInput.value;
+        });
+        
+        next1Btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Animate step transition
+            tl.to(step1, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3,
+                ease: "power1.in",
+                onComplete: () => {
+                    step1.classList.remove('active');
+                    step2.classList.add('active');
+                    
+                    gsap.from(step2, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.5,
+                        ease: "power1.out"
+                    });
+                }
+            });
+        });
+        
+        next2Btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const dob = dobInput.value;
+            
+            // Validate inputs
+            if (!username || !dob) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            // Calculate age
+            const birthDate = new Date(dob);
+            const age = calculateAge(birthDate);
+            
+            // Prepare data for submission
+            const formData = {
+                name: username,
+                dob: dob,
+                age: age,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Show loading state
+            step2.classList.remove('active');
+            step3.classList.add('active');
+            loadingEl.style.display = 'block';
+            resultsEl.style.display = 'none';
+            
+            try {
+                // Submit data to Google Sheets
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                // Fetch all users data
+                const usersResponse = await fetch(`${scriptURL}?action=getUsers`);
+                const usersData = await usersResponse.json();
+                
+                if (!usersData.success) throw new Error(usersData.message);
+                
+                // Process and display results
+                displayResults(usersData.users, formData);
+                
+                // Hide loading, show results
+                loadingEl.style.display = 'none';
+                resultsEl.style.display = 'block';
+                
+                // Animate results in
+                gsap.from("#user-list .user-card", {
+                    opacity: 0,
+                    y: 20,
+                    stagger: 0.1,
+                    duration: 0.5,
+                    ease: "back.out"
+                });
+                
+                // Animate stats
+                gsap.from(".stat-box", {
+                    opacity: 0,
+                    y: 20,
+                    stagger: 0.1,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+                
+                // Animate progress bar
+                gsap.to(progressBar, {
+                    width: `${formData.percentOlder}%`,
+                    duration: 2,
+                    ease: "power2.out"
+                });
+                
+                // If user is in top 3, celebrate!
+                if (formData.rank <= 3) {
+                    celebrate();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Something went wrong. Please try again.');
+                loadingEl.style.display = 'none';
+            }
+        });
+        
+        restartBtn.addEventListener('click', () => {
+            // Reset form
+            usernameInput.value = '';
+            dobInput.value = '';
+            next1Btn.disabled = true;
+            next2Btn.disabled = true;
+            
+            // Animate transition back to step 1
+            tl.to(step3, {
+                opacity: 0,
+                y: -20,
+                duration: 0.3,
+                ease: "power1.in",
+                onComplete: () => {
+                    step3.classList.remove('active');
+                    step1.classList.add('active');
+                    
+                    gsap.from(step1, {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.5,
+                        ease: "power1.out"
+                    });
+                }
+            });
+        });
+        
+        // Helper functions
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        
+        function displayResults(users, currentUser) {
+            // Sort users by age (oldest first)
+            const sortedUsers = [...users].sort((a, b) => b.age - a.age);
+            
+            // Get top 10
+            const top10 = sortedUsers.slice(0, 10);
+            
+            // Clear previous results
+            userList.innerHTML = '';
+            
+            // Display top 10
+            top10.forEach((user, index) => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                if (user.name === currentUser.name) {
+                    userCard.classList.add('pulse');
+                    userCard.style.borderLeft = '4px solid var(--danger)';
+                }
+                
+                userCard.innerHTML = `
+                    <div class="rank">${index + 1}</div>
+                    <div class="info">
+                        <div class="name">${user.name}</div>
+                        <div class="age">${user.age} years old</div>
+                    </div>
+                    <div class="date">${new Date(user.dob).toLocaleDateString()}</div>
+                `;
+                
+                userList.appendChild(userCard);
+            });
+            
+            // Calculate stats
+            const totalUsers = users.length;
+            const averageAge = Math.round(users.reduce((sum, user) => sum + user.age, 0) / totalUsers);
+            
+            // Find current user's rank
+            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser.name) + 1;
+            const percentOlder = Math.round(((totalUsers - currentUserRank) / totalUsers) * 100);
+            
+            // Update stats
+            totalUsersEl.textContent = totalUsers;
+            averageAgeEl.textContent = averageAge;
+            yourRankEl.textContent = currentUserRank;
+            percentOlderEl.textContent = percentOlder;
+            
+            // Add rank and percent to currentUser for animation
+            currentUser.rank = currentUserRank;
+            currentUser.percentOlder = percentOlder;
+        }
+        
+        function showError(message) {
+            errorEl.textContent = message;
+            gsap.fromTo(errorEl, 
+                { opacity: 0, y: -10 },
+                { opacity: 1, y: 0, duration: 0.3 }
+            );
+            
+            setTimeout(() => {
+                gsap.to(errorEl, {
+                    opacity: 0,
+                    y: -10,
+                    duration: 0.3,
+                    delay: 3
+                });
+            }, 3000);
+        }
+        
+        function celebrate() {
+            celebrateEl.style.display = 'block';
+            
+            // Create confetti
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = getRandomColor();
+                celebrateEl.appendChild(confetti);
+                
+                gsap.to(confetti, {
+                    y: `+=${Math.random() * 500 + 200}`,
+                    x: `+=${(Math.random() - 0.5) * 200}`,
+                    rotation: Math.random() * 360,
+                    opacity: 1,
+                    duration: Math.random() * 2 + 1,
+                    delay: Math.random() * 0.5,
+                    ease: "power1.out",
+                    onComplete: () => {
+                        confetti.remove();
+                    }
+                });
+            }
+            
+            setTimeout(() => {
+                celebrateEl.style.display = 'none';
+                celebrateEl.innerHTML = '';
+            }, 3000);
+        }
+        
+        function getRandomColor() {
+            const colors = ['#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#f72585'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+    </script>
+</body>
+</html>
