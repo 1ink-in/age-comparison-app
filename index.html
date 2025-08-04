@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Comparison App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light-blue: #e6f7ff;
+            --border: #d1e0ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInScale 0.6s ease-out;
+        }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .form-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light-blue);
+            font-weight: 500;
+        }
+        
+        input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(72, 149, 239, 0.15);
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            margin-top: 0.5rem;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+        
+        .results {
+            margin-top: 1.5rem;
+        }
+        
+        .results h2 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1.8rem;
+            font-size: 1.8rem;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .user-card.current-user {
+            border-left: 4px solid var(--danger);
+            box-shadow: 0 5px 20px rgba(247, 37, 133, 0.15);
+            animation: pulseHighlight 2s infinite;
+        }
+        
+        @keyframes pulseHighlight {
+            0% { box-shadow: 0 5px 20px rgba(247, 37, 133, 0.15); }
+            50% { box-shadow: 0 5px 25px rgba(247, 37, 133, 0.25); }
+            100% { box-shadow: 0 5px 20px rgba(247, 37, 133, 0.15); }
+        }
+        
+        .user-card .rank {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .user-card .info {
+            flex-grow: 1;
+        }
+        
+        .user-card .name {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-card .age {
+            color: #6c757d;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin: 2.5rem 0 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            width: 0;
+            border-radius: 10px;
+            transition: width 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        
+        .progress-label {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+        
+        .progress-label span {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-box {
+            background: var(--light-blue);
+            padding: 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .error {
+            color: var(--danger);
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 600;
+            padding: 0.8rem;
+            background: rgba(247, 37, 133, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .icon {
+            margin-right: 8px;
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .restart-btn {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--border);
+            margin-top: 1.5rem;
+        }
+        
+        .restart-btn:hover {
+            background: var(--light-blue);
+            transform: translateY(-3px);
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 1.8rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            button {
+                padding: 0.9rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-clock icon"></i>Age Comparison</h1>
+            <p>See how your age compares with others</p>
+        </div>
+        
+        <div class="step-indicator">
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+        </div>
+        
+        <div id="step1" class="form-step active">
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user icon"></i>Your Name</label>
+                <div class="input-container">
+                    <input type="text" id="username" placeholder="Enter your name..." autocomplete="off">
+                </div>
+            </div>
+            <button id="next1" disabled>
+                <i class="fas fa-arrow-right icon"></i>Continue
+            </button>
+        </div>
+        
+        <div id="step2" class="form-step">
+            <div class="form-group">
+                <label for="dob"><i class="fas fa-birthday-cake icon"></i>Your Date of Birth</label>
+                <div class="input-container">
+                    <input type="date" id="dob" max="">
+                </div>
+            </div>
+            <button id="next2" disabled>
+                <i class="fas fa-paper-plane icon"></i>Submit
+            </button>
+        </div>
+        
+        <div id="step3" class="form-step">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Calculating results...</p>
+            </div>
+            
+            <div class="results" id="results">
+                <h2><i class="fas fa-trophy icon"></i>Top 10 Oldest Users</h2>
+                <div id="user-list"></div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
+                <div class="progress-label">
+                    You are older than <span id="percent-older">0</span>% of users
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="total-users">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="average-age">0</div>
+                        <div class="stat-label">Avg. Age</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="your-rank">-</div>
+                        <div class="stat-label">Your Rank</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="restart" class="restart-btn">
+                <i class="fas fa-redo icon"></i>Start Over
+            </button>
+        </div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="footer-note">
+            <i class="fas fa-lock icon"></i>Your data is securely stored and never shared
+        </div>
+    </div>
+    
+    <script>
+        // Google Sheets setup
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwpPm6NeLVps3y_XDLs29e8ZEtM5_c69jjSqHqSIojovjQYAu9-nOpagvU--V3axZicvg/exec';
+        
+        // DOM elements
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const usernameInput = document.getElementById('username');
+        const dobInput = document.getElementById('dob');
+        const next1Btn = document.getElementById('next1');
+        const next2Btn = document.getElementById('next2');
+        const restartBtn = document.getElementById('restart');
+        const userList = document.getElementById('user-list');
+        const totalUsersEl = document.getElementById('total-users');
+        const averageAgeEl = document.getElementById('average-age');
+        const yourRankEl = document.getElementById('your-rank');
+        const percentOlderEl = document.getElementById('percent-older');
+        const progressBar = document.getElementById('progress-bar');
+        const loadingEl = document.querySelector('.loading');
+        const resultsEl = document.getElementById('results');
+        const errorEl = document.getElementById('error');
+        const stepDots = document.querySelectorAll('.step-dot');
+        
+        // Set max date to today for date picker
+        dobInput.max = new Date().toISOString().split('T')[0];
+        
+        // Event listeners
+        usernameInput.addEventListener('input', () => {
+            next1Btn.disabled = usernameInput.value.trim() === '';
+        });
+        
+        dobInput.addEventListener('change', () => {
+            next2Btn.disabled = !dobInput.value;
+        });
+        
+        // Step 1 to Step 2 transition
+        next1Btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Update step indicator
+            stepDots[0].classList.remove('active');
+            stepDots[1].classList.add('active');
+            
+            // Transition to next step
+            step1.classList.remove('active');
+            step2.classList.add('active');
+        });
+        
+        // Step 2 to Step 3 transition
+        next2Btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const dob = dobInput.value;
+            
+            // Validate inputs
+            if (!username || !dob) {
+                showError('Please fill in all fields');
+                return;
+            }
+            
+            // Update step indicator
+            stepDots[1].classList.remove('active');
+            stepDots[2].classList.add('active');
+            
+            // Calculate age
+            const birthDate = new Date(dob);
+            const age = calculateAge(birthDate);
+            
+            // Prepare data for submission
+            const formData = {
+                name: username,
+                dob: dob,
+                age: age,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Show loading state
+            step2.classList.remove('active');
+            step3.classList.add('active');
+            loadingEl.style.display = 'block';
+            resultsEl.style.display = 'none';
+            errorEl.style.display = 'none';
+            
+            try {
+                // Submit data to Google Sheets
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Failed to save data');
+                
+                // Fetch all users data
+                const usersResponse = await fetch(`${scriptURL}?action=getUsers`);
+                const usersData = await usersResponse.json();
+                
+                if (!usersData.success) throw new Error(usersData.message);
+                
+                // Process and display results
+                displayResults(usersData.users, formData);
+                
+                // Hide loading, show results
+                loadingEl.style.display = 'none';
+                resultsEl.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Something went wrong. Please try again.');
+                loadingEl.style.display = 'none';
+            }
+        });
+        
+        restartBtn.addEventListener('click', () => {
+            // Reset form
+            usernameInput.value = '';
+            dobInput.value = '';
+            next1Btn.disabled = true;
+            next2Btn.disabled = true;
+            
+            // Reset step indicator
+            stepDots[0].classList.add('active');
+            stepDots[1].classList.remove('active');
+            stepDots[2].classList.remove('active');
+            
+            // Transition back to step 1
+            step3.classList.remove('active');
+            step1.classList.add('active');
+        });
+        
+        // Helper functions
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        
+        function displayResults(users, currentUser) {
+            // Sort users by age (oldest first)
+            const sortedUsers = [...users].sort((a, b) => b.age - a.age);
+            
+            // Get top 10
+            const top10 = sortedUsers.slice(0, 10);
+            
+            // Clear previous results
+            userList.innerHTML = '';
+            
+            // Display top 10
+            top10.forEach((user, index) => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                if (user.name === currentUser.name) {
+                    userCard.classList.add('current-user');
+                }
+                
+                userCard.innerHTML = `
+                    <div class="rank">${index + 1}</div>
+                    <div class="info">
+                        <div class="name">
+                            <i class="fas fa-user"></i> ${user.name}
+                        </div>
+                        <div class="age">
+                            <i class="fas fa-cake-candles"></i> ${user.age} years old
+                        </div>
+                    </div>
+                `;
+                
+                userList.appendChild(userCard);
+            });
+            
+            // Calculate stats
+            const totalUsers = users.length;
+            const averageAge = Math.round(users.reduce((sum, user) => sum + user.age, 0) / totalUsers);
+            
+            // Find current user's rank
+            const currentUserRank = sortedUsers.findIndex(user => user.name === currentUser.name) + 1;
+            const percentOlder = Math.round(((totalUsers - currentUserRank) / totalUsers) * 100);
+            
+            // Update stats
+            totalUsersEl.textContent = totalUsers;
+            averageAgeEl.textContent = averageAge;
+            yourRankEl.textContent = currentUserRank;
+            percentOlderEl.textContent = percentOlder;
+            
+            // Animate progress bar
+            setTimeout(() => {
+                progressBar.style.width = `${percentOlder}%`;
+            }, 300);
+        }
+        
+        function showError(message) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Initialize step indicator
+        stepDots[0].classList.add('active');
+    </script>
+</body>
+</html>
