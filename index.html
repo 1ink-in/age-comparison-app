@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Age Comparison App</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4361ee;
@@ -13,57 +12,25 @@
             --accent: #4895ef;
             --light: #f8f9fa;
             --dark: #212529;
-            --success: #4cc9f0;
-            --danger: #f72585;
-            --light-blue: #e6f7ff;
-            --border: #d1e0ff;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
         
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: #f5f7fa;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--dark);
-            overflow-x: hidden;
             padding: 20px;
         }
         
         .container {
-            width: 100%;
-            max-width: 600px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-        
-        .header h1 {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .header p {
-            color: #6c757d;
-            font-size: 1.1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
         }
         
         .form-step {
@@ -72,208 +39,51 @@
         
         .form-step.active {
             display: block;
-            animation: fadeIn 0.4s ease;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .form-group {
-            margin-bottom: 1.8rem;
-            position: relative;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: var(--secondary);
-            font-size: 1.1rem;
-        }
-        
-        input {
+        input, button {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: var(--light-blue);
-            font-weight: 500;
-        }
-        
-        input:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(72, 149, 239, 0.15);
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
         
         button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            display: block;
-            width: 100%;
-            margin-top: 0.5rem;
         }
         
         button:disabled {
-            background: #adb5bd;
-            cursor: not-allowed;
-        }
-        
-        .results {
-            margin-top: 1.5rem;
-        }
-        
-        .user-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--accent);
-        }
-        
-        .user-card.current-user {
-            border-left: 4px solid var(--danger);
-        }
-        
-        .user-card .rank {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-right: 1rem;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .stat-box {
-            background: var(--light-blue);
-            padding: 1.2rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 3rem 0;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(67, 97, 238, 0.2);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background: #ccc;
         }
         
         .error {
-            color: var(--danger);
-            text-align: center;
+            color: red;
             margin: 1rem 0;
-            font-weight: 600;
-            padding: 0.8rem;
-            background: rgba(247, 37, 133, 0.1);
-            border-radius: 8px;
-            display: none;
-        }
-        
-        @media (max-width: 500px) {
-            .container {
-                padding: 1.8rem;
-            }
-            .stats {
-                grid-template-columns: 1fr;
-            }
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-user-clock icon"></i>Age Comparison</h1>
-            <p>See how your age compares with others</p>
-        </div>
-        
         <div id="step1" class="form-step active">
-            <div class="form-group">
-                <label for="username"><i class="fas fa-user icon"></i>Your Name</label>
-                <input type="text" id="username" placeholder="Enter your name..." required>
-            </div>
+            <h2>Enter Your Name</h2>
+            <input type="text" id="username" placeholder="Your name" required>
             <button id="next1" disabled>Continue</button>
         </div>
         
         <div id="step2" class="form-step">
-            <div class="form-group">
-                <label for="dob"><i class="fas fa-birthday-cake icon"></i>Your Date of Birth</label>
-                <input type="date" id="dob" max="" required>
-            </div>
+            <h2>Enter Your Date of Birth</h2>
+            <input type="date" id="dob" required>
             <button id="next2" disabled>Submit</button>
         </div>
         
         <div id="step3" class="form-step">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Calculating results...</p>
-            </div>
-            
-            <div class="results" id="results">
-                <h2><i class="fas fa-trophy icon"></i>Top 10 Oldest Users</h2>
-                <div id="user-list"></div>
-                
-                <div class="stats">
-                    <div class="stat-box">
-                        <div class="stat-value" id="total-users">0</div>
-                        <div class="stat-label">Total Users</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="average-age">0</div>
-                        <div class="stat-label">Avg. Age</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-value" id="your-rank">-</div>
-                        <div class="stat-label">Your Rank</div>
-                    </div>
-                </div>
-            </div>
-            
+            <h2>Results</h2>
+            <div id="results"></div>
             <button id="restart">Start Over</button>
         </div>
         
@@ -281,10 +91,9 @@
     </div>
 
     <script>
-        // Google Sheets setup
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyvca-kcY_3Ogw_fBp3NJXup5lsTJU3rZpwslPaFfVq/dev'; // Replace with your deployed URL
+        // Replace with your deployed Google Apps Script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIPhjWLEsbsreZivnEqeAbAXYS9Y0DCbNesRKppVJyouWg1F68WoGR8lubj6TJaRKTbg/exec';
         
-        // DOM elements
         const step1 = document.getElementById('step1');
         const step2 = document.getElementById('step2');
         const step3 = document.getElementById('step3');
@@ -293,13 +102,8 @@
         const next1Btn = document.getElementById('next1');
         const next2Btn = document.getElementById('next2');
         const restartBtn = document.getElementById('restart');
-        const userList = document.getElementById('user-list');
-        const totalUsersEl = document.getElementById('total-users');
-        const averageAgeEl = document.getElementById('average-age');
-        const yourRankEl = document.getElementById('your-rank');
-        const loadingEl = document.querySelector('.loading');
-        const resultsEl = document.getElementById('results');
-        const errorEl = document.getElementById('error');
+        const resultsDiv = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
         
         // Set max date to today
         dobInput.max = new Date().toISOString().split('T')[0];
@@ -313,63 +117,61 @@
             next2Btn.disabled = !dobInput.value;
         });
         
-        next1Btn.addEventListener('click', (e) => {
-            e.preventDefault();
+        next1Btn.addEventListener('click', () => {
             step1.classList.remove('active');
             step2.classList.add('active');
         });
         
-        next2Btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            
-            const username = usernameInput.value.trim();
+        next2Btn.addEventListener('click', async () => {
+            const name = usernameInput.value.trim();
             const dob = dobInput.value;
             
-            if (!username || !dob) {
+            if (!name || !dob) {
                 showError('Please fill in all fields');
                 return;
             }
             
             const age = calculateAge(new Date(dob));
             
-            // Show loading
-            step2.classList.remove('active');
-            step3.classList.add('active');
-            loadingEl.style.display = 'block';
-            resultsEl.style.display = 'none';
-            
             try {
                 // Submit data
-                const response = await fetch(scriptURL, {
+                const submitResponse = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                     body: JSON.stringify({
-                        name: username,
+                        name: name,
                         dob: dob,
                         age: age,
                         timestamp: new Date().toISOString()
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+                    })
                 });
                 
-                if (!response.ok) throw new Error('Failed to save data');
+                if (!submitResponse.ok) {
+                    throw new Error('Failed to submit data');
+                }
                 
-                // Fetch all data
-                const usersResponse = await fetch(`${scriptURL}?action=getUsers`);
-                const data = await usersResponse.json();
+                // Get all data
+                const getResponse = await fetch(`${SCRIPT_URL}?action=getUsers`);
                 
-                if (!data.users) throw new Error('No data received');
+                if (!getResponse.ok) {
+                    throw new Error('Failed to get data');
+                }
                 
-                displayResults(data.users, { name: username, age: age });
+                const data = await getResponse.json();
                 
-                loadingEl.style.display = 'none';
-                resultsEl.style.display = 'block';
+                if (!data.users) {
+                    throw new Error('No users data received');
+                }
+                
+                displayResults(data.users, { name, age });
+                step2.classList.remove('active');
+                step3.classList.add('active');
                 
             } catch (error) {
+                showError(error.message);
                 console.error('Error:', error);
-                showError(error.message || 'Something went wrong');
-                loadingEl.style.display = 'none';
             }
         });
         
@@ -378,7 +180,8 @@
             dobInput.value = '';
             next1Btn.disabled = true;
             next2Btn.disabled = true;
-            userList.innerHTML = '';
+            resultsDiv.innerHTML = '';
+            errorDiv.textContent = '';
             step3.classList.remove('active');
             step1.classList.add('active');
         });
@@ -386,41 +189,38 @@
         function calculateAge(birthDate) {
             const today = new Date();
             let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
             return age;
         }
         
         function displayResults(users, currentUser) {
             const sorted = [...users].sort((a, b) => b.age - a.age);
-            const top10 = sorted.slice(0, 10);
-            const total = users.length;
             const rank = sorted.findIndex(u => u.name === currentUser.name) + 1;
+            const total = users.length;
             const percent = Math.round(((total - rank) / total) * 100);
             
-            userList.innerHTML = '';
-            top10.forEach((user, i) => {
-                const card = document.createElement('div');
-                card.className = `user-card ${user.name === currentUser.name ? 'current-user' : ''}`;
-                card.innerHTML = `
-                    <div class="rank">${i + 1}</div>
-                    <div class="info">
-                        <div class="name">${user.name}</div>
-                        <div class="age">${user.age} years</div>
-                    </div>
-                `;
-                userList.appendChild(card);
+            let html = `
+                <p>Total users: ${total}</p>
+                <p>Your rank: ${rank} of ${total}</p>
+                <p>You are older than ${percent}% of users</p>
+                <h3>Top 10 Oldest:</h3>
+                <ul>
+            `;
+            
+            sorted.slice(0, 10).forEach((user, i) => {
+                html += `<li>${i+1}. ${user.name} (${user.age} years)</li>`;
             });
             
-            totalUsersEl.textContent = total;
-            averageAgeEl.textContent = Math.round(users.reduce((a, b) => a + b.age, 0) / total);
-            yourRankEl.textContent = rank;
+            html += `</ul>`;
+            resultsDiv.innerHTML = html;
         }
         
         function showError(message) {
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-            setTimeout(() => errorEl.style.display = 'none', 5000);
+            errorDiv.textContent = message;
+            setTimeout(() => errorDiv.textContent = '', 5000);
         }
     </script>
 </body>
